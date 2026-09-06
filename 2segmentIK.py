@@ -31,20 +31,22 @@ def draw():#draw segments on screen
 
 def calcArm(event):#calc and draw arm at every mouse movement
     target = (event.x,event.y)
-    relativeTarget = (target[0]-origin[0],origin[1]-target[1])
+    relativeTarget = (target[0]-origin[0],origin[1]-target[1])#target relative to origin
+
+    #segment lengths' definition
     a = segment1.length
     b = segment2.length
     c = math.sqrt(relativeTarget[0]**2 + relativeTarget[1]**2)
     c = min(a + b, c)
     c = max(abs(a-b), c)
+
     RelTargetDir = math.atan2(relativeTarget[1],relativeTarget[0])
 
+    #calc the elbow and the base angle 
+    elbowAngle = math.acos((a**2 + b**2 - c**2)/(2*a*b))#law of cosines to find angle C
+    baseAngle = math.asin(math.sin(elbowAngle) * b / c)#law of sines to find angle B
 
-
-    elbowAngle = math.acos((a**2 + b**2 - c**2)/(2*a*b))
-    baseAngle = math.asin(math.sin(elbowAngle) * b / c)
-
-    
+    #set segment angles relative to the x axis
     segment1.angle = baseAngle + RelTargetDir
     segment2.angle = -(math.pi - elbowAngle - segment1.angle)
     segment1.calcPos()
@@ -52,12 +54,6 @@ def calcArm(event):#calc and draw arm at every mouse movement
     segment2.y1 = segment1.y2
     segment2.calcPos()
     draw()
-
-"""
-    segment1.angle = RelTargetDir
-    segment2.x1 = segment1.x2
-    segment2.y1 = segment1.y2
-"""
 
 #window generation and config
 root = tk.Tk()
